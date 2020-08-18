@@ -42,6 +42,7 @@ if os.environ.get('HEROKU') is not None:
     CKEDITOR_BASEPATH = f'{STATIC_URL}ckeditor/ckeditor/'
 
     MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
@@ -79,6 +80,7 @@ elif os.environ.get('AZURE') is not None:
     }
 }
     MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
@@ -147,20 +149,24 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'allauth.socialaccount',
         'django_inlinecss',
         'storages',
+        'graphene_django',
+        'corsheaders',
 
         'users',
         'pages',
         'builder',
         'dashboard',
+        'api',
         'visualbuilder',
     ]
-
+    API_TEST_USER_MAIL = os.environ.get('API_TEST_USER_MAIL')
 
 else:
     DEBUG = True
     CKEDITOR_BASEPATH = "/opendecision/static/ckeditor/ckeditor/"
     STATIC_URL = '/opendecision/static/'
     SECRET_KEY = '678&exk6aus^#z8j+#tco4%_bgv6mvd6!kcf!gokhza$)3sjql'
+    API_TEST_USER_MAIL = os.environ.get('API_TEST_USER_MAIL', 'test@open-decision.org')
     INSTALLED_APPS = [
         'django.contrib.admin',
         'django.contrib.auth',
@@ -176,15 +182,19 @@ else:
         'allauth.account',
         'allauth.socialaccount',
         'django_inlinecss',
+        'graphene_django',
+        'corsheaders',
 
         'users',
         'pages',
         'builder',
         'dashboard',
+        'api',
         'visualbuilder',
     ]
 
     MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
@@ -225,6 +235,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'opendecision.wsgi.application'
+
+GRAPHENE = {
+    'SCHEMA': 'opendecision.schema.schema'
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -268,7 +283,7 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Open Decision - '
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-# 
+
 # LANGUAGES = (
 #     ('en', _('English')),
 #     ('de', _('German')),
@@ -276,7 +291,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
@@ -294,3 +309,11 @@ os.path.join(
 # Custom Data for Open Decision
 DATAFORMAT_VERSION = 0.1
 LOGIC_TYPE = 'jsonLogic'
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://127.0.0.1:3000',
+    ]
+CORS_ALLOW_CREDENTIALS = True
