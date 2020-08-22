@@ -151,6 +151,8 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'storages',
         'graphene_django',
         'corsheaders',
+        'graphql_auth',
+        'django_filters',
 
         'users',
         'pages',
@@ -184,6 +186,9 @@ else:
         'django_inlinecss',
         'graphene_django',
         'corsheaders',
+        'graphql_auth',
+        'django_filters',
+
 
         'users',
         'pages',
@@ -214,6 +219,8 @@ else:
     }
 
     ACCOUNT_EMAIL_VERIFICATION = "none"
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 
 ROOT_URLCONF = 'opendecision.urls'
@@ -237,7 +244,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'opendecision.wsgi.application'
 
 GRAPHENE = {
-    'SCHEMA': 'opendecision.schema.schema'
+    'SCHEMA': 'opendecision.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
 
 
@@ -263,7 +273,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 AUTHENTICATION_BACKENDS = (
 
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+     "graphql_auth.backends.GraphQLAuthBackend",
 
 )
 SITE_ID = 1
@@ -317,3 +327,22 @@ CORS_ORIGIN_WHITELIST = [
     'https://127.0.0.1:3000',
     ]
 CORS_ALLOW_CREDENTIALS = True
+
+GRAPHQL_JWT = {
+
+    "JWT_VERIFY_EXPIRATION": True,
+
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ResendActivationEmail",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.VerifySecondaryEmail",
+    ],
+}
+

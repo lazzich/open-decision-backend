@@ -2,13 +2,15 @@ import graphene
 from graphene import relay
 from graphene_django.types import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
+from graphql_relay import from_global_id
 
 from dashboard.models import DecisionTree, Node
 from pages.models import PublishedTree
 from users.models import CustomUser
 from django.conf import settings
 
-user = CustomUser.objects.get(email=settings.API_TEST_USER_MAIL)
+# user = CustomUser.objects.get(email=settings.API_TEST_USER_MAIL)
+# user=info.context.user
 
 class DecisionTreeNode(DjangoObjectType):
     class Meta:
@@ -19,7 +21,9 @@ class DecisionTreeNode(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        return queryset.filter(owner=user)
+        if not info.context.user.is_authenticated:
+            raise Exception('Authentication credentials were not provided')
+        return queryset.filter(owner=info.context.user)
 
 class NodeNode(DjangoObjectType):
     class Meta:
@@ -51,15 +55,9 @@ class NodeNode(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        return queryset.filter(decision_tree__owner=user)
-
-class UserNode(DjangoObjectType):
-    class Meta:
-        model = CustomUser
-        filter_fields = {
-            'email': ['exact'],
-                }
-        interfaces = (relay.Node, )
+        if not info.context.user.is_authenticated:
+            raise Exception('Authentication credentials were not provided')
+        return queryset.filter(decision_tree__owner=info.context.user)
 
 class Query(graphene.ObjectType):
 
@@ -69,19 +67,25 @@ class Query(graphene.ObjectType):
     node = relay.Node.Field(NodeNode)
     all_nodes = DjangoFilterConnectionField(NodeNode)
 
-    user = relay.Node.Field(UserNode)
+    # user = relay.Node.Field(UserNode)
 
 
-# class QuestionMutation(relay.ClientIDMutation):
-#     class Input:
-#         text = graphene.String(required=True)
-#         id = graphene.ID()
-#
-#     question = graphene.Field(QuestionType)
-#
-#     @classmethod
-#     def mutate_and_get_payload(cls, root, info, text, id):
-#         question = Question.objects.get(pk=from_global_id(id)[1])
-#         question.text = text
-#         question.save()
-#         return QuestionMutation(question=question)
+class DecisionTreeMutation(relay.ClientIDMutation):
+    class Input:
+        name = graphene.String(required=True)
+        tags = graphene.String()
+        extra_data = graphene.String()
+        id = graphene.ID()
+
+    tree = graphene.Field(DecisionTreeNode)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, text, id):
+        try:
+            tree = DecisionTree.objects.get(id=from_global_id(id)[1])
+            tree.name = name
+            tree.save()
+            return QuestionMutation(tree=tree)
+        except:
+            print('Not existing')
+
