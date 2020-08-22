@@ -154,7 +154,6 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'graphql_auth',
         'django_filters',
 
-
         'users',
         'pages',
         'builder',
@@ -189,6 +188,7 @@ else:
         'corsheaders',
         'graphql_auth',
         'django_filters',
+
 
         'users',
         'pages',
@@ -345,3 +345,4 @@ GRAPHQL_JWT = {
         "graphql_auth.mutations.VerifySecondaryEmail",
     ],
 }
+

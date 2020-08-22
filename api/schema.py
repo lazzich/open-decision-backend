@@ -88,3 +88,4 @@ class DecisionTreeMutation(relay.ClientIDMutation):
             return QuestionMutation(tree=tree)
         except:
             print('Not existing')
+
