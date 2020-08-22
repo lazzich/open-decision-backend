@@ -42,6 +42,7 @@ if os.environ.get('HEROKU') is not None:
     CKEDITOR_BASEPATH = f'{STATIC_URL}ckeditor/ckeditor/'
 
     MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
@@ -79,6 +80,7 @@ elif os.environ.get('AZURE') is not None:
     }
 }
     MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
@@ -148,6 +150,10 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'django_inlinecss',
         'storages',
         'graphene_django',
+        'corsheaders',
+        'graphql_auth',
+        'django_filters',
+
 
         'users',
         'pages',
@@ -180,6 +186,9 @@ else:
         'allauth.socialaccount',
         'django_inlinecss',
         'graphene_django',
+        'corsheaders',
+        'graphql_auth',
+        'django_filters',
 
         'users',
         'pages',
@@ -190,6 +199,7 @@ else:
     ]
 
     MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
@@ -209,6 +219,8 @@ else:
     }
 
     ACCOUNT_EMAIL_VERIFICATION = "none"
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 
 ROOT_URLCONF = 'opendecision.urls'
@@ -232,7 +244,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'opendecision.wsgi.application'
 
 GRAPHENE = {
-    'SCHEMA': 'opendecision.schema.schema'
+    'SCHEMA': 'opendecision.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
 
 
@@ -258,7 +273,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 AUTHENTICATION_BACKENDS = (
 
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+     "graphql_auth.backends.GraphQLAuthBackend",
 
 )
 SITE_ID = 1
@@ -304,3 +319,29 @@ os.path.join(
 # Custom Data for Open Decision
 DATAFORMAT_VERSION = 0.1
 LOGIC_TYPE = 'jsonLogic'
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://127.0.0.1:3000',
+    ]
+CORS_ALLOW_CREDENTIALS = True
+
+GRAPHQL_JWT = {
+
+    "JWT_VERIFY_EXPIRATION": True,
+
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ResendActivationEmail",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.VerifySecondaryEmail",
+    ],
+}
