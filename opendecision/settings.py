@@ -152,6 +152,7 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'graphene_django',
         'corsheaders',
         'graphql_auth',
+        'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
         'django_filters',
 
         'users',
@@ -187,6 +188,7 @@ else:
         'graphene_django',
         'corsheaders',
         'graphql_auth',
+        'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
         'django_filters',
 
 
@@ -287,7 +289,6 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 LOGIN_REDIRECT_URL = '/dashboard/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/logout-redirect'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Open Decision - '
-#ACCOUNT_FORMS = {'signup': 'users.forms.CustomUserCreationForm'}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -331,6 +332,7 @@ CORS_ALLOW_CREDENTIALS = True
 GRAPHQL_JWT = {
 
     "JWT_VERIFY_EXPIRATION": True,
+     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
@@ -345,4 +347,3 @@ GRAPHQL_JWT = {
         "graphql_auth.mutations.VerifySecondaryEmail",
     ],
 }
-

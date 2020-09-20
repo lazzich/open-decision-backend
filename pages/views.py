@@ -41,7 +41,7 @@ def handler500(request):
     return render(request, '500.html', status=500)
 
 def logout_redirect(request):
-    return HttpResponseRedirect(os.environ.get('LOGOUT_REDIRECT_URL', 'https://open-decision.org'))
+    return HttpResponseRedirect(os.environ.get('LOGOUT_REDIRECT_URL', '/'))
 
 @xframe_options_exempt
 def show_published_tree(request, slug):
