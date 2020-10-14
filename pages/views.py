@@ -9,6 +9,7 @@ from dashboard.models import DecisionTree
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.views.decorators.clickjacking import xframe_options_exempt
+import opendecision.schema as api
 
 # Create your views here.
 def home_view(request):
@@ -26,6 +27,12 @@ def contact_view(request):
 def test_view(request, *args, **kwargs):
     context = {}
     return render(request, 'test.html', context)
+
+def get_schema_view(request, *args, **kwargs):
+    export = api.schema.introspect()
+    response = JsonResponse(export, safe=False, content_type='application/json', json_dumps_params={'indent': 2})
+    response['Content-Disposition'] = 'attachment; filename="schema.json"'
+    return response
 
 def lang_view(request, *args, **kwargs):
     context = {}

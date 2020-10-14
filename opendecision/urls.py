@@ -21,9 +21,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 from allauth.account.views import LoginView
 from graphene_django.views import GraphQLView
+from graphql_jwt.decorators import jwt_cookie
 
 from builder.views import node_create_view, node_edit_view, load_input_form, load_logic_module, load_nodes, load_token
-from pages.views import home_view, contact_view, test_view,show_published_tree, get_published_tree, lang_view, logout_redirect
+from pages.views import home_view, contact_view, test_view,show_published_tree, get_published_tree, lang_view, logout_redirect, get_schema_view
 from dashboard.views import (dashboard_view, published_tree_view, add_tree, tree_view, export_tree,
                             set_as_endnode, delete_node, delete_tree, export_file,
                             load_tree, unpublish_tree)
@@ -36,12 +37,13 @@ urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('logout-redirect', logout_redirect, name='logout-redirect'),
-    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path("graphql", csrf_exempt(jwt_cookie(GraphQLView.as_view(graphiql=True)))),
 
     path('',  LoginView.as_view()),
     path('contact/', contact_view),
     path('trees/', dashboard_view),
     path('test/', test_view),
+     path('schema/', get_schema_view),
     path('lang/', lang_view),
     path('publish/<str:slug>/', show_published_tree , name='publish'),
 

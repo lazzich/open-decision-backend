@@ -34,7 +34,7 @@ class AuthMutation(graphene.ObjectType):
 class Query(api.schema.Query, MeQuery, graphene.ObjectType):
     pass
 
-class Mutation(AuthMutation, graphene.ObjectType):
+class Mutation(api.schema.Mutation, AuthMutation, graphene.ObjectType):
     pass
 
 

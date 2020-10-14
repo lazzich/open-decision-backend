@@ -25,7 +25,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "production", "media")
 
 # Heroku Settings
 if os.environ.get('HEROKU') is not None:
-    ALLOWED_HOSTS = ['.herokuapp.com']
+    ALLOWED_HOSTS = ['.herokuapp.com', 'e12db8487c25.ngrok.io']
 
     DATABASES = {
         'default': {
@@ -64,6 +64,7 @@ elif os.environ.get('AZURE') is not None:
         'od-prod-od-staging.azurewebsites.net',
         'od-static.azureedge.net',
         '127.0.0.1',
+        'e12db8487c25.ngrok.io'
     ]
 
     DATABASES = {
@@ -201,11 +202,9 @@ else:
     ]
 
     MIDDLEWARE = [
-        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -347,3 +346,9 @@ GRAPHQL_JWT = {
         "graphql_auth.mutations.VerifySecondaryEmail",
     ],
 }
+
+ALLOWED_HOSTS = [
+        '127.0.0.1',
+        '.ngrok.io',
+        'localhost'
+    ]
