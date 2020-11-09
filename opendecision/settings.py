@@ -114,7 +114,8 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
     SECURE_HSTS_SECONDS = 30
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     #SECURE_HSTS_PRELOAD = True
-    SECURE_REFERRER_POLICY = 'same-origin'
+    SECURE_REFERRER_POLICY = 'None'
+    #TODO review later
     # CSRF_COOKIE_SECURE = True
     # SESSION_COOKIE_SECURE = True
 
@@ -319,7 +320,7 @@ os.path.join(
 DATAFORMAT_VERSION = 0.1
 LOGIC_TYPE = 'jsonLogic'
 
-CORS_ORIGIN_WHITELIST = [
+CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'https://localhost:3000',
     'http://127.0.0.1:3000',
