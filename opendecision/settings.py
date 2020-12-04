@@ -167,6 +167,7 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
 
 else:
     DEBUG = True
+    CORS_ORIGIN_ALLOW_ALL = DEBUG
     CKEDITOR_BASEPATH = "/opendecision/static/ckeditor/ckeditor/"
     STATIC_URL = '/opendecision/static/'
     SECRET_KEY = '678&exk6aus^#z8j+#tco4%_bgv6mvd6!kcf!gokhza$)3sjql'
@@ -205,6 +206,7 @@ else:
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -333,7 +335,7 @@ GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
     "JWT_COOKIE_SAMESITE": "None",
-    "JWT_COOKIE_DOMAIN": "http://localhost.open-decision.org",
+    "JWT_COOKIE_DOMAIN": os.environ.get('HEROKU'),
 
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
