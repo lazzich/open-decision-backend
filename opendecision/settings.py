@@ -328,14 +328,15 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
     'https://127.0.0.1:3000',
     ]
+
 CORS_ALLOW_CREDENTIALS = True
+
 
 GRAPHQL_JWT = {
 
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_COOKIE_SAMESITE": "None",
-    "JWT_COOKIE_DOMAIN": os.environ.get('HEROKU'),
+    "JWT_COOKIE_DOMAIN": os.environ.get('JWT_COOKIE_DOMAIN'),
 
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
@@ -350,3 +351,6 @@ GRAPHQL_JWT = {
         "graphql_auth.mutations.VerifySecondaryEmail",
     ],
 }
+
+if os.environ.get('JWT_COOKIE_SAMESITE'):
+    GRAPHQL_JWT['JWT_COOKIE_SAMESITE'] = os.environ.get('JWT_COOKIE_SAMESITE')
