@@ -354,5 +354,8 @@ GRAPHQL_JWT = {
 if os.environ.get('JWT_COOKIE_SAMESITE'):
     GRAPHQL_JWT['JWT_COOKIE_SAMESITE'] = os.environ.get('JWT_COOKIE_SAMESITE')
 
+if os.environ.get('JWT_COOKIE_SAMESITE') == 'None':
+    GRAPHQL_JWT['JWT_COOKIE_SECURE'] = True
+
 if os.environ.get('JWT_COOKIE_DOMAIN'):
     GRAPHQL_JWT['JWT_COOKIE_DOMAIN'] = os.environ.get('JWT_COOKIE_DOMAIN')
