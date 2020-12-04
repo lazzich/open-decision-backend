@@ -80,7 +80,6 @@ elif os.environ.get('AZURE') is not None:
     }
 }
     MIDDLEWARE = [
-        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
@@ -90,6 +89,10 @@ elif os.environ.get('AZURE') is not None:
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ]
+
+    if os.environ.get('CORS_ALLOWED'):
+        MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
+
 
     DEFAULT_FILE_STORAGE = 'opendecision.custom_azure.AzureMediaStorage'
     STATICFILES_STORAGE = 'opendecision.custom_azure.AzureStaticStorage'
