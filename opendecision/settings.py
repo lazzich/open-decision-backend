@@ -278,8 +278,8 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'users.CustomUser'
 AUTHENTICATION_BACKENDS = (
 
-    'django.contrib.auth.backends.ModelBackend',
      "graphql_auth.backends.GraphQLAuthBackend",
+    'django.contrib.auth.backends.ModelBackend',
 
 )
 SITE_ID = 1

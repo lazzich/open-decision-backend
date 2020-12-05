@@ -12,7 +12,6 @@ django-allauth==0.43.0
 django-ckeditor==5.9.0
 django-cors-headers==3.5.0
 django-filter==2.4.0
-django-graphql-jwt==0.3.1
 django-graphql-auth==0.3.14
 django-inlinecss==0.3.0
 django-js-asset==1.2.2
@@ -31,3 +30,5 @@ sqlparse==0.3.0
 tornado==6.0.3
 webencodings==0.5.1
 whitenoise==5.0.1
+git+git://github.com/flavors/django-graphql-jwt@28e4f97#egg=django-graphql-jwt
+
