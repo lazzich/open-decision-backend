@@ -9,6 +9,7 @@ from dashboard.models import DecisionTree
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.views.decorators.clickjacking import xframe_options_exempt
+import opendecision.schema as api
 
 # Create your views here.
 def home_view(request):
@@ -27,6 +28,12 @@ def test_view(request, *args, **kwargs):
     context = {}
     return render(request, 'test.html', context)
 
+def get_schema_view(request, *args, **kwargs):
+    export = api.schema.introspect()
+    response = JsonResponse(export, safe=False, content_type='application/json', json_dumps_params={'indent': 2})
+    response['Content-Disposition'] = 'attachment; filename="schema.json"'
+    return response
+
 def lang_view(request, *args, **kwargs):
     context = {}
     return render(request, 'set_language.html', context)
@@ -41,7 +48,7 @@ def handler500(request):
     return render(request, '500.html', status=500)
 
 def logout_redirect(request):
-    return HttpResponseRedirect(os.environ.get('LOGOUT_REDIRECT_URL', 'https://open-decision.org'))
+    return HttpResponseRedirect(os.environ.get('LOGOUT_REDIRECT_URL', '/'))
 
 @xframe_options_exempt
 def show_published_tree(request, slug):

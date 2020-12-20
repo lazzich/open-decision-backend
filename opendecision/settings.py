@@ -63,7 +63,7 @@ elif os.environ.get('AZURE') is not None:
         'od-prod.azurewebsites.net',
         'od-prod-od-staging.azurewebsites.net',
         'od-static.azureedge.net',
-        '127.0.0.1',
+        '127.0.0.1'
     ]
 
     DATABASES = {
@@ -80,7 +80,6 @@ elif os.environ.get('AZURE') is not None:
     }
 }
     MIDDLEWARE = [
-        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
@@ -90,6 +89,10 @@ elif os.environ.get('AZURE') is not None:
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ]
+
+    if os.environ.get('CORS_ALLOWED'):
+        MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
+
 
     DEFAULT_FILE_STORAGE = 'opendecision.custom_azure.AzureMediaStorage'
     STATICFILES_STORAGE = 'opendecision.custom_azure.AzureStaticStorage'
@@ -114,7 +117,8 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
     SECURE_HSTS_SECONDS = 30
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     #SECURE_HSTS_PRELOAD = True
-    SECURE_REFERRER_POLICY = 'same-origin'
+    SECURE_REFERRER_POLICY = 'None'
+    #TODO review later
     # CSRF_COOKIE_SECURE = True
     # SESSION_COOKIE_SECURE = True
 
@@ -152,6 +156,7 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'graphene_django',
         'corsheaders',
         'graphql_auth',
+        'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
         'django_filters',
 
         'users',
@@ -165,6 +170,7 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
 
 else:
     DEBUG = True
+    CORS_ORIGIN_ALLOW_ALL = DEBUG
     CKEDITOR_BASEPATH = "/opendecision/static/ckeditor/ckeditor/"
     STATIC_URL = '/opendecision/static/'
     SECRET_KEY = '678&exk6aus^#z8j+#tco4%_bgv6mvd6!kcf!gokhza$)3sjql'
@@ -187,6 +193,7 @@ else:
         'graphene_django',
         'corsheaders',
         'graphql_auth',
+        'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
         'django_filters',
 
 
@@ -199,11 +206,10 @@ else:
     ]
 
     MIDDLEWARE = [
-        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.locale.LocaleMiddleware',
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -272,8 +278,8 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'users.CustomUser'
 AUTHENTICATION_BACKENDS = (
 
-    'django.contrib.auth.backends.ModelBackend',
      "graphql_auth.backends.GraphQLAuthBackend",
+    'django.contrib.auth.backends.ModelBackend',
 
 )
 SITE_ID = 1
@@ -287,7 +293,6 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 LOGIN_REDIRECT_URL = '/dashboard/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/logout-redirect'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Open Decision - '
-#ACCOUNT_FORMS = {'signup': 'users.forms.CustomUserCreationForm'}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -320,17 +325,24 @@ os.path.join(
 DATAFORMAT_VERSION = 0.1
 LOGIC_TYPE = 'jsonLogic'
 
-CORS_ORIGIN_WHITELIST = [
+CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'https://localhost:3000',
     'http://127.0.0.1:3000',
     'https://127.0.0.1:3000',
     ]
+
+if os.environ.get('CORS_ALLOWED'):
+    for origin in os.environ.get('CORS_ALLOWED').split(','):
+        CORS_ALLOWED_ORIGINS.append(origin.strip())
+
 CORS_ALLOW_CREDENTIALS = True
+
 
 GRAPHQL_JWT = {
 
     "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
@@ -346,3 +358,11 @@ GRAPHQL_JWT = {
     ],
 }
 
+if os.environ.get('JWT_COOKIE_SAMESITE'):
+    GRAPHQL_JWT['JWT_COOKIE_SAMESITE'] = os.environ.get('JWT_COOKIE_SAMESITE')
+
+if os.environ.get('JWT_COOKIE_SAMESITE') == 'None':
+    GRAPHQL_JWT['JWT_COOKIE_SECURE'] = True
+
+if os.environ.get('JWT_COOKIE_DOMAIN'):
+    GRAPHQL_JWT['JWT_COOKIE_DOMAIN'] = os.environ.get('JWT_COOKIE_DOMAIN')

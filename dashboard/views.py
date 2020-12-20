@@ -17,6 +17,7 @@ from pages.models import PublishedTree
 from users.models import CustomUser, Profile
 from django.conf import settings
 
+
 @login_required
 def dashboard_view(request):
     if request.method == 'GET':
