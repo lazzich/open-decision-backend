@@ -25,7 +25,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "production", "media")
 
 # Heroku Settings
 if os.environ.get('HEROKU') is not None:
-    ALLOWED_HOSTS = ['.herokuapp.com']
+    ALLOWED_HOSTS = [
+        '.herokuapp.com',
+        '.open-decision.org',
+        '127.0.0.1'
+        ]
 
     DATABASES = {
         'default': {
@@ -53,6 +57,9 @@ if os.environ.get('HEROKU') is not None:
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ]
+
+    if os.environ.get('CORS_ALLOWED'):
+        MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 #Azure Settings
