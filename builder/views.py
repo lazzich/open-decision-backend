@@ -32,7 +32,7 @@ def node_create_view(request, slug):
 @login_required
 def node_edit_view(request, slug, node_slug):
     if request.method == 'GET':
-        data_node = Node.objects.filter(decision_tree__owner=request.user).get(slug=node_slug)
+        data_node = Node.objects.filter(decision_tree__owner=request.user).filter(decision_tree__slug=slug).get(slug=node_slug)
         node_form = NodeForm({'name': data_node.name, 'question': data_node.question})
 
         try:
