@@ -48,7 +48,7 @@ def node_edit_view(request, slug, node_slug):
             logic_formset_init = None
 
         free_text_destination_id = json.loads(data_node.inputs)[0].pop('destination', '') if input_type == 'free_text' else ''
-        free_text_destination = Node.objects.filter(decision_tree__owner=request.user).get(id=free_text_destination_id).slug if input_type == 'free_text' else ''
+        free_text_destination = Node.objects.filter(decision_tree__owner=request.user).filter(decision_tree__slug=slug).get(id=free_text_destination_id).slug if input_type == 'free_text' else ''
         input_formset_init = load_input_form(request, input_type, data_input, logic_formset_init)
         context = {
             'form': node_form,
@@ -61,7 +61,7 @@ def node_edit_view(request, slug, node_slug):
         return render(request, 'node_create.html', context)
 
     elif request.method == 'POST' and request.POST.get('save'):
-            id = Node.objects.filter(decision_tree__owner=request.user).get(slug=node_slug).id
+            id = Node.objects.filter(decision_tree__owner=request.user).filter(decision_tree__slug=slug).get(slug=node_slug).id
             save_node(request, slug, id)
             return redirect('/trees/'+str(slug)+'/')
 
@@ -231,7 +231,7 @@ def save_node(request, slug, *args):
         if dest_key:
             try:
                 #If yes, get ID to avoid issues if connected node is renamed
-                id= Node.objects.filter(decision_tree__owner=request.user).get(slug=slugify(data_input[i][dest_key])).id
+                id= Node.objects.filter(decision_tree__owner=request.user).filter(decision_tree__slug=slug).get(slug=slugify(data_input[i][dest_key])).id
                 data_input[i][dest_key] = id
                 dest_key = False
             except:
@@ -263,12 +263,11 @@ def save_node(request, slug, *args):
                 if dest_key:
                     try:
                         #If yes, get ID to avoid issues if connected node is renamed
-                        id= Node.objects.filter(decision_tree__owner=request.user).get(slug=slugify(data_logic[i][dest_key])).id
+                        id= Node.objects.filter(decision_tree__owner=request.user).filter(decision_tree__slug=slug).get(slug=slugify(data_logic[i][dest_key])).id
                         data_logic[i][dest_key] = id
                         dest_key = False
                     except:
                         #If not, create new node
-                        print(data_logic[i][dest_key])
                         new = Node(
                         name= data_logic[i][dest_key],
                         slug= slugify(data_logic[i][dest_key]),
