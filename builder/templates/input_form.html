@@ -79,7 +79,9 @@ hideRemoveForFirstInput();
 function afterAdd(row){
   try {
     let inputType = document.getElementById('id_input-0-input_type').value;
-    if (inputType === 'button' || inputType === 'free_text'){
+    if (inputType === 'button'){
+      // TODO temporary fix as ckeditor variable plugin only supports one value per node 
+    // if (inputType === 'button' || inputType === 'free_text'){
       let inputSelector = document.querySelectorAll("[id$=input_type]");
       inputSelector[inputSelector.length-1].style.display = "none";
       document.querySelector('label[for=' + inputSelector[inputSelector.length-1].id+']').style.display = "none";
