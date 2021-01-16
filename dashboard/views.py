@@ -354,7 +354,10 @@ def build_tree (slug, request):
 
             elif input_type == 'free_text':
                 if 'destination' in i:
-                    export[n.slug]['destination']['default'] = all_nodes.get(id = i['destination']).slug
+                    try:
+                        export[n.slug]['destination']['default'] = all_nodes.get(id = i['destination']).slug
+                    except:
+                        export[n.slug]['destination']['default'] = 'EMPTY'
 
                 export[n.slug]['inputs'].append(
                 {
