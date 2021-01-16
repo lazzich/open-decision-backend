@@ -103,7 +103,8 @@ def load_input_form(request, *args):
         input_formset_init = InputFormSet(initial=data_input, form_kwargs={'input_type': input_type}, prefix='input')
         context = {
             'input_formset_init': input_formset_init,
-            'expandable': True if (input_type=='button' or input_type == 'free_text') else False,
+            # 'expandable': True if (input_type=='button' or input_type == 'free_text') else False,
+            'expandable': True if (input_type=='button') else False,
             'edit': True,
             }
         if logic_formset_init:
