@@ -117,7 +117,9 @@ def load_input_form(request, *args):
         InputFormSet = formset_factory(InputForm)
         context = {
         'input_formset': InputFormSet(form_kwargs={'input_type': input_type}, prefix='input'),
-        'expandable': True if (input_type=='button' or input_type == 'free_text') else False,
+        # 'expandable': True if (input_type=='button' or input_type == 'free_text') else False,
+        'expandable': True if (input_type=='button') else False,
+
         }
         return render(request, 'input_form.html', context)
 
