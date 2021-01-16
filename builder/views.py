@@ -48,7 +48,10 @@ def node_edit_view(request, slug, node_slug):
             logic_formset_init = None
 
         free_text_destination_id = json.loads(data_node.inputs)[0].pop('destination', '') if input_type == 'free_text' else ''
-        free_text_destination = Node.objects.filter(decision_tree__owner=request.user).filter(decision_tree__slug=slug).get(id=free_text_destination_id).slug if input_type == 'free_text' else ''
+        try:
+            free_text_destination = Node.objects.filter(decision_tree__owner=request.user).filter(decision_tree__slug=slug).get(id=free_text_destination_id).slug if input_type == 'free_text' else ''
+        except:
+            free_text_destination = ''
         input_formset_init = load_input_form(request, input_type, data_input, logic_formset_init)
         context = {
             'form': node_form,
