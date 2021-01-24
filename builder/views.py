@@ -220,6 +220,10 @@ def save_node(request, slug, *args):
         logic_form_instance = LogicFormSet(data_logic_dirty, form_kwargs={'input_type': request.POST.get('input-0-input_type')}, prefix='logic')
         if logic_form_instance.is_valid():
             data_logic= logic_form_instance.cleaned_data
+    else:
+        # Temp fix for list without any logic inputs
+        if request.POST.get('input-0-input_type') == 'list':
+            data_logic=[{}]
 
     is_end_node = True if (data_input and (data_input[0]['input_type'])) == 'end_node' else False
 
