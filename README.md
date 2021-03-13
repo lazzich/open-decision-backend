@@ -16,7 +16,7 @@ Welcome to the Open Decision backend!
 
 ## Important Links
 
-See the working prototype on https://github.com/open-decision/open-decision
+See the working prototype on https://github.com/open-decision/open-decision-prototype
 
 See the frontend on https://github.com/open-decision/open-decision-frontend
 
