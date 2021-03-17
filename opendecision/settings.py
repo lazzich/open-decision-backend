@@ -7,7 +7,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import os
-from .ckeditor_settings import *
 from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -46,7 +45,6 @@ if os.environ.get('HEROKU') is not None:
     CKEDITOR_BASEPATH = f'{STATIC_URL}ckeditor/ckeditor/'
 
     MIDDLEWARE = [
-        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
@@ -111,7 +109,6 @@ elif os.environ.get('AZURE') is not None:
     AZURE_CUSTOM_DOMAIN = 'od-static.azureedge.net'
     STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
     MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
-    CKEDITOR_BASEPATH = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/ckeditor/ckeditor/'
 
 if os.environ.get('DJANGO_PRODUCTION') is not None:
 
@@ -141,6 +138,9 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         # Sender mails
         SERVER_EMAIL = os.environ.get('SERVER_EMAIL')
         DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+    else:
+        EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
     # Admin  configuration
     ADMINS = [(os.environ.get('ADMIN1_NAME'), os.environ.get('ADMIN1_EMAIL'))]
@@ -154,11 +154,6 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'django.contrib.staticfiles',
         'django.contrib.sites',
 
-        'ckeditor',
-        'allauth',
-        'allauth.account',
-        'allauth.socialaccount',
-        'django_inlinecss',
         'storages',
         'graphene_django',
         'corsheaders',
@@ -167,11 +162,7 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'django_filters',
 
         'users',
-        'pages',
-        'builder',
-        'dashboard',
         'api',
-        'visualbuilder',
     ]
     API_TEST_USER_MAIL = os.environ.get('API_TEST_USER_MAIL')
 
@@ -189,14 +180,9 @@ else:
         'django.contrib.sessions',
         'django.contrib.messages',
         'django.contrib.staticfiles',
-        'django.contrib.sites',
+        # 'django.contrib.sites',
 
-        'ckeditor',
-        'debug_toolbar',
-        'allauth',
-        'allauth.account',
-        'allauth.socialaccount',
-        'django_inlinecss',
+    
         'graphene_django',
         'corsheaders',
         'graphql_auth',
@@ -205,11 +191,7 @@ else:
 
 
         'users',
-        'pages',
-        'builder',
-        'dashboard',
         'api',
-        'visualbuilder',
     ]
 
     MIDDLEWARE = [
@@ -231,7 +213,6 @@ else:
         }
     }
 
-    ACCOUNT_EMAIL_VERIFICATION = "none"
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
@@ -289,17 +270,6 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 
 )
-SITE_ID = 1
-
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-LOGIN_REDIRECT_URL = '/dashboard/'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/logout-redirect'
-ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Open Decision - '
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

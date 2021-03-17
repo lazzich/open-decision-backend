@@ -4,8 +4,7 @@ from graphene_django.types import DjangoObjectType, ObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql_relay import from_global_id
 
-from dashboard.models import DecisionTree, Node
-from pages.models import PublishedTree
+from .models import DecisionTree, Node, PublishedTree
 from users.models import CustomUser
 from django.conf import settings
 from django.utils.text import slugify
