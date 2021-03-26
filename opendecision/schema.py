@@ -8,7 +8,6 @@ import api.schema
 import graphql_jwt
 
 
-
 class AuthMutation(graphene.ObjectType):
     register = mutations.Register.Field()
     verify_account = mutations.VerifyAccount.Field()

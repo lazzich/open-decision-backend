@@ -9,7 +9,7 @@ from users.models import CustomUser
 from django.conf import settings
 from django.utils.text import slugify
 import opendecision.schema as api
-import json
+import json, os
 # user = CustomUser.objects.get(email=settings.API_TEST_USER_MAIL)
 # user=info.context.user
 # class SchemaQuery(ObjectType):
@@ -18,18 +18,26 @@ import json
 #     def resolve_x(root, info):
 #         return json.dumps(api.schema.introspect())
 
+running_in_production = os.environ.get('DJANGO_PRODUCTION') is not None
+
 class DecisionTreeNode(DjangoObjectType):
     class Meta:
         model = DecisionTree
         filter_fields = '__all__'
-        fields = ('created_at', 'name', 'owner', 'slug', 'node_set', 'tags', 'extra_data')
+        fields = ('created_at', 'name', 'owner', 'slug', 'node_set',
+                  'tags', 'extra_data', 'language', 'last_modified')
         interfaces = (relay.Node, )
 
     @classmethod
     def get_queryset(cls, queryset, info):
         if not info.context.user.is_authenticated:
-            raise Exception('Authentication credentials were not provided')
+            if not running_in_production or settings.EXPOSE_TEST_USER:
+                test_user = CustomUser.objects.get(email=settings.API_TEST_USER_MAIL)
+                return queryset.filter(owner=test_user.id)
+            else:
+                raise Exception('Authentication credentials were not provided')
         return queryset.filter(owner=info.context.user)
+
 
 class NodeNode(DjangoObjectType):
     class Meta:
@@ -43,7 +51,7 @@ class NodeNode(DjangoObjectType):
             'start_node': ['exact'],
             'new_node': ['exact'],
             'end_node': ['exact']
-                }
+        }
         fields = (
             'created_at',
             'name',
@@ -56,14 +64,19 @@ class NodeNode(DjangoObjectType):
             'start_node',
             'end_node',
             'extra_data'
-            )
+        )
         interfaces = (relay.Node, )
 
     @classmethod
     def get_queryset(cls, queryset, info):
         if not info.context.user.is_authenticated:
-            raise Exception('Authentication credentials were not provided')
-        return queryset.filter(decision_tree__owner=info.context.user)
+            if not running_in_production or settings.EXPOSE_TEST_USER:
+                test_user = CustomUser.objects.get(email=settings.API_TEST_USER_MAIL)
+                return queryset.filter(owner=test_user.id)
+            else:
+                raise Exception('Authentication credentials were not provided')
+        return queryset.filter(owner=info.context.user)
+
 
 class Query(graphene.ObjectType):
     # get_schema = SchemaQuery
@@ -99,7 +112,8 @@ class UpdateDecisionTreeMutation(relay.ClientIDMutation):
         except:
             tags = ""
         try:
-            tree = DecisionTree.objects.filter(owner=info.context.user).get(id=from_global_id(id)[1])
+            tree = DecisionTree.objects.filter(
+                owner=info.context.user).get(id=from_global_id(id)[1])
             tree.name = name
             if extra_data:
                 tree.extra_data = extra_data
@@ -109,6 +123,7 @@ class UpdateDecisionTreeMutation(relay.ClientIDMutation):
             return UpdateDecisionTreeMutation(tree=tree)
         except:
             raise Exception('Tree does not exist')
+
 
 class CreateDecisionTreeMutation(relay.ClientIDMutation):
     class Input:
@@ -130,18 +145,18 @@ class CreateDecisionTreeMutation(relay.ClientIDMutation):
             tags = kwargs.pop('tags')
         except:
             tags = ""
-        
+
         tree = DecisionTree(
             name=name,
         )
-        tree.slug=slugify(name)
+        tree.slug = slugify(name)
         tree.owner = info.context.user
         if extra_data:
             tree.extra_data = extra_data
         if tags:
             tree.tags = tags
         tree.save()
-        return CreateDecisionTreeMutation(tree=tree)    
+        return CreateDecisionTreeMutation(tree=tree)
 
 
 class Mutation(graphene.ObjectType):

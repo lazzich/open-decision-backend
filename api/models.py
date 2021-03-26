@@ -63,6 +63,8 @@ class DecisionTree(models.Model):
     slug       = models.SlugField(default="")
     tags       = models.TextField(null=True, blank=True)
     extra_data      = models.TextField(null=True, blank=True)
+    language   = models.CharField(default='de_DE', max_length=200)
+    last_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         constraints = [

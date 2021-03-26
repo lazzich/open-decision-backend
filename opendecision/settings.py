@@ -164,7 +164,8 @@ if os.environ.get('DJANGO_PRODUCTION') is not None:
         'users',
         'api',
     ]
-    API_TEST_USER_MAIL = os.environ.get('API_TEST_USER_MAIL')
+    API_TEST_USER_MAIL = os.environ.get('API_TEST_USER_MAIL', 'test@outlook.com')
+    EXPOSE_TEST_USER = os.environ.get('EXPOSE_TEST_USER', False)
 
 else:
     DEBUG = True
@@ -172,7 +173,7 @@ else:
     CKEDITOR_BASEPATH = "/opendecision/static/ckeditor/ckeditor/"
     STATIC_URL = '/opendecision/static/'
     SECRET_KEY = '678&exk6aus^#z8j+#tco4%_bgv6mvd6!kcf!gokhza$)3sjql'
-    API_TEST_USER_MAIL = os.environ.get('API_TEST_USER_MAIL', 'test@open-decision.org')
+    API_TEST_USER_MAIL = os.environ.get('API_TEST_USER_MAIL', 'test@outlook.com')
     INSTALLED_APPS = [
         'django.contrib.admin',
         'django.contrib.auth',
@@ -182,7 +183,7 @@ else:
         'django.contrib.staticfiles',
         # 'django.contrib.sites',
 
-    
+
         'graphene_django',
         'corsheaders',
         'graphql_auth',
@@ -307,6 +308,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://localhost:3000',
     'http://127.0.0.1:3000',
     'https://127.0.0.1:3000',
+    'https://decision-builder.netlify.app'
     ]
 
 if os.environ.get('CORS_ALLOWED'):
