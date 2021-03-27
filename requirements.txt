@@ -31,4 +31,5 @@ tornado==6.0.3
 webencodings==0.5.1
 whitenoise==5.0.1
 git+git://github.com/open-decision/django-graphql-jwt@mod#egg=django-graphql-jwt
+PyJWT==1.7.1
 
