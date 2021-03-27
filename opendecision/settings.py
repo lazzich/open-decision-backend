@@ -22,6 +22,8 @@ STATIC_ROOT = os.path.join(
     BASE_DIR, "production", "collected_static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "production", "media")
 
+SITE_ID = 1
+
 # Heroku Settings
 if os.environ.get('HEROKU') is not None:
     ALLOWED_HOSTS = [
