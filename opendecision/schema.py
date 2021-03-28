@@ -29,6 +29,10 @@ class AuthMutation(graphene.ObjectType):
     verify_token = mutations.VerifyToken.Field()
     refresh_token = mutations.RefreshToken.Field()
     revoke_token = mutations.RevokeToken.Field()
+    delete_refresh_token_cookie = graphql_jwt.DeleteRefreshTokenCookie.Field()
+    delete_token_cookie = graphql_jwt.DeleteJSONWebTokenCookie.Field()
+
+
 
 class Query(api.schema.Query, MeQuery, graphene.ObjectType):
     pass

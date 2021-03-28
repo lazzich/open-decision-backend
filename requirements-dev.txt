@@ -24,3 +24,6 @@ six==1.13.0
 sqlparse==0.3.0
 tornado==6.0.3
 webencodings==0.5.1
+git+git://github.com/open-decision/django-graphql-jwt@mod#egg=django-graphql-jwt
+PyJWT==1.7.1
+
